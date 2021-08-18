@@ -7,7 +7,9 @@
     "blog": "www.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "cross-env NODE_ENV=dev nodemon ./bin/www.js",
+    "prd": "cross-env NODE_ENV=production nodemon ./bin/www.js"
   },
   "repository": {
     "type": "git",
@@ -19,5 +21,9 @@
   "bugs": {
     "url": "https://github.com/rick-liyue-huang/Node-Based-Blog-Project/issues"
   },
-  "homepage": "https://github.com/rick-liyue-huang/Node-Based-Blog-Project#readme"
+  "homepage": "https://github.com/rick-liyue-huang/Node-Based-Blog-Project#readme",
+  "dependencies": {
+    "cross-env": "^7.0.3",
+    "nodemon": "^2.0.12"
+  }
 }
