@@ -24,6 +24,7 @@
   "homepage": "https://github.com/rick-liyue-huang/Node-Based-Blog-Project#readme",
   "dependencies": {
     "cross-env": "^7.0.3",
+    "mysql": "^2.18.1",
     "nodemon": "^2.0.12"
   }
 }
