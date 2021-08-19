@@ -1,5 +1,6 @@
 const {loginCheck} = require('../controller/user');
 const {SuccessModel, ErrorModel} = require('../model/responseModel');
+const {set} = require('../db/redis');
 
 const getCookieExpireTime = () => {
   const d = new Date();
@@ -10,9 +11,9 @@ const getCookieExpireTime = () => {
 const handleUserRouter = (req, res) => {
   const method = req.method;
 
-  if (method === 'GET' && req.path === '/api/user/login') {
-    // const {username, password} = req.body;
-    const {username, password} = req.query;
+  if (method === 'POST' && req.path === '/api/user/login') {
+    const {username, password} = req.body;
+    // const {username, password} = req.query;
     const result = loginCheck(username, password);
     return result.then(data => {
       if (data.username) {
@@ -22,6 +23,8 @@ const handleUserRouter = (req, res) => {
         // set session
         req.session.username = data.username;
         req.session.realname = data.realname;
+        // sync to redis
+        set(req.sessionId, req.session);
         console.log('req.session is ', req.session);
         return new SuccessModel(data);
       } else {

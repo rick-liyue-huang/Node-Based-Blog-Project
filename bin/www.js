@@ -1,7 +1,7 @@
 const http = require('http');
 const serverHandler = require('../app');
 
-const PORT = 3001;
+const PORT = 8000;
 
 const server = http.createServer(serverHandler);
 

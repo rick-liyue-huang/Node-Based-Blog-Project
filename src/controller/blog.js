@@ -1,12 +1,12 @@
 const {exec} = require('../db/mysql');
 
-const getList = (author, keywords) => {
+const getList = (author, keyword) => {
   let sql = `select * from blogs where 1 = 1 `;
   if (author) {
     sql += `and author = '${author}' `;
   }
-  if (keywords) {
-    sql += `and title like '%${keywords}%' `;
+  if (keyword) {
+    sql += `and title like '%${keyword}%' `;
   }
   sql += `order by createdtime desc;`;
   // return promise

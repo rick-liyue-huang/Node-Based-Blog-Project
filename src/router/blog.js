@@ -1,15 +1,33 @@
 const {getList, getDetail, newBlog, updateBlog, deleteBlog} = require('../controller/blog');
 const {SuccessModel, ErrorModel} = require('../model/responseModel');
 
+// login verification
+const verifyLogin = (req) => {
+  if (!req.session.username) {
+    return Promise.resolve(new ErrorModel('no login'));
+  }
+}
+
+
 const handleBlogRouter = (req, res) => {
   const method = req.method;
   const id = req.query.id;
 
   if (method === 'GET' && req.path === '/api/blog/list') {
-    const author = req.query.author  || '';
-    const keywords = req.query.keywords || '';
+    let author = req.query.author  || '';
+    const keyword = req.query.keyword || '';
+
+    if (req.query.isadmin) {
+      const loginResult = verifyLogin(req);
+      if (loginResult) {
+        return loginResult;
+      }
+      author = req.session.username;
+    }
+
+
     // const listData = getList(author, keywords);
-    const result = getList(author, keywords);
+    const result = getList(author, keyword);
     return result.then(listData => {
       return new SuccessModel(listData);
     });
@@ -30,7 +48,13 @@ const handleBlogRouter = (req, res) => {
     // const data = newBlog(blogData);
     // return new SuccessModel(data);
 
-    req.body.author = 'leo'; // fake data
+    const loginResult = verifyLogin(req);
+    if (loginResult) {
+      return loginResult;
+    }
+
+    // req.body.author = 'leo'; // fake data
+    req.body.author = req.session.username;
     const result = newBlog(req.body);
     return result.then(data => {
       return new SuccessModel(data);
@@ -38,6 +62,11 @@ const handleBlogRouter = (req, res) => {
   }
 
   if (method === 'POST' && req.path === '/api/blog/update') {
+    const loginResult = verifyLogin(req);
+    if (loginResult) {
+      return loginResult;
+    }
+
     const result = updateBlog(id, req.body);
     return result.then(value => {
       if (value) {
@@ -50,7 +79,12 @@ const handleBlogRouter = (req, res) => {
   }
 
   if (method === 'POST' && req.path === '/api/blog/delete') {
-    const author = 'leo';
+    const loginResult = verifyLogin(req);
+    if (loginResult) {
+      return loginResult;
+    }
+    // const author = 'leo';
+    const author = req.session.username;
     const result = deleteBlog(id, author);
     return result.then(value => {
       if (value) {
